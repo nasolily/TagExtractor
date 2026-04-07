@@ -4,7 +4,7 @@ public class TagExtractorRunner {
     public static void main(String[] args) {
         TagExtractorFrame frame = new TagExtractorFrame();
 
-        frame.setTitle("Lab 08: Tag/Keyword Extractor");
+        frame.setTitle("Keyword Extractor");
         frame.setSize(800, 600);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLocationRelativeTo(null);
