@@ -68,7 +68,33 @@ public class TagExtractorFrame extends JFrame {
     }
 
     private void extractTags() {
+        if (stopWords.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please load stop words");
+            return;
+        }
 
+        JFileChooser chooser = new JFileChooser();
+        if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            bookPath = chooser.getSelectedFile().toPath();
+            fileNameLbl.setText("Book title: " + bookPath.getFileName());
+            tagMap.clear();
+            displayArea.setText("");
+
+            try (Stream<String> lines = Files.lines(bookPath)) {
+                lines.forEach(line -> {
+                    String[] words = line.toLowerCase().split("[^a-z]+");
+                    for (String w : words) {
+                        if (!w.isEmpty() && !stopWords.contains(w)) {
+                            tagMap.put(w, tagMap.getOrDefault(w, 0) + 1);
+                        }
+                    }
+                });
+
+                tagMap.forEach((word, count) -> displayArea.append(word + ": " + count + "\n"));
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, "Error reading the file.");
+            }
+        }
     }
 
     private void saveTags() {
