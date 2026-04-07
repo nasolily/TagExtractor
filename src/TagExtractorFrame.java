@@ -98,6 +98,16 @@ public class TagExtractorFrame extends JFrame {
     }
 
     private void saveTags() {
-
+        if (tagMap.isEmpty()) {
+            JFileChooser saver =  new JFileChooser();
+            if (saver.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+                try (PrintWriter out = new PrintWriter(saver.getSelectedFile())) {
+                    tagMap.forEach((word, count) -> out.println(word + ": " + count + "\n"));
+                    JOptionPane.showMessageDialog(this, "Tags saved!");
+                } catch (IOException ex) {
+                    JOptionPane.showMessageDialog(this, "Failed to save tags.");
+                }
+            }
+        }
     }
 }
