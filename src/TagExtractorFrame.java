@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.io.*;
 import java.nio.file.Files;
@@ -56,6 +57,10 @@ public class TagExtractorFrame extends JFrame {
 
     public void loadStopWords () {
         JFileChooser chooser = new JFileChooser();
+
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Text files (*.txt)", "txt");
+        chooser.setFileFilter(filter);
+
         if  (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             try (Stream<String> lines = Files.lines(chooser.getSelectedFile().toPath())) {
                 stopWords.clear();
@@ -74,6 +79,9 @@ public class TagExtractorFrame extends JFrame {
         }
 
         JFileChooser chooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files (*.txt)", "txt");
+        chooser.setFileFilter(filter);
+
         if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             bookPath = chooser.getSelectedFile().toPath();
             fileNameLbl.setText("Book title: " + bookPath.getFileName());
@@ -91,6 +99,8 @@ public class TagExtractorFrame extends JFrame {
                 });
 
                 tagMap.forEach((word, count) -> displayArea.append(word + ": " + count + "\n"));
+
+                displayArea.setCaretPosition(0); // supposed to help scroll start at top
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(this, "Error reading the file.");
             }
@@ -99,7 +109,13 @@ public class TagExtractorFrame extends JFrame {
 
     private void saveTags() {
         if (tagMap.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Nothing to save.");
+            return;
+        }
             JFileChooser saver =  new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("Text Files (*.txt)", "txt");
+            saver.setFileFilter(filter);
+
             if (saver.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
                 try (PrintWriter out = new PrintWriter(saver.getSelectedFile())) {
                     tagMap.forEach((word, count) -> out.println(word + ": " + count + "\n"));
@@ -110,4 +126,4 @@ public class TagExtractorFrame extends JFrame {
             }
         }
     }
-}
+
